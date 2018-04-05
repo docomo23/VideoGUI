@@ -1,13 +1,17 @@
+import time
+import cv2
 import tkinter as tk
 import os
 video_frame_size = (640,480)
 video_length = 5
-item_font_size = 20
-description_font_size = 13
+item_font_size = 25
+description_font_size = 18
 items_list = ["人脸录入", "距离角度测试", "上下侧脸测试", "左右测试", "遮挡测试", "眼镜测试", "光照测试", "多人测试"]
 
-def record(item_text, scenario_text, filename):
-    path = "./" + item_text + "/" + scenario_text + "/"
+def record(item_text, scenario_texts, filename):
+    path = "./" + item_text + "/" 
+    for scenario_text in scenario_texts:
+        path = path + scenario_text + "/"
     if not os.path.exists(path):
         os.makedirs(path)
     path = path + filename
@@ -39,12 +43,12 @@ def record(item_text, scenario_text, filename):
     cv2.destroyAllWindows()
 
 
-def create_widget(page, item_text, scenario_text, description, filename):
-        tk.Label(page, text=description, font=("Helvetica", description_font_size)).pack()
+def create_widget(page, item_text, scenario_texts, filename):
         var = tk.IntVar()
+        tk.Label(page, text=",".join(scenario_texts), font = ("Helvetica", description_font_size)).pack()
         page.btn = tk.Checkbutton(master=page, variable=var)
-        page.btn["text"] = scenario_text
-        page.btn["command"] = lambda: record(item_text, scenario_text, filename)
+        page.btn["text"] = "".join(scenario_texts)
+        page.btn["command"] = lambda: record(item_text, scenario_texts, filename)
         page.btn.pack(side="top")
 
 def init(toplevel):
@@ -89,55 +93,105 @@ class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         item_text = "人脸录入"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", description_font_size))
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, "强光", "正常光线，距离（1-2米）的识别率", "3.avi")
-        create_widget(self, item_text, "弱光", "正常光线，距离（1-2米）的误识别率", "4.avi")
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
 
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         item_text = "距离角度测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", description_font_size))
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, "0-0.5", "正常光线，距离（0-0.5米）的识别率", "3.avi")
-        create_widget(self, item_text, "0.5-1", "正常光线，距离（1-2米）的误识别率", "4.avi")
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
 
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="This is page 3")
-        label.pack(side="top", fill="both", expand=True)
+        item_text = "上下侧脸测试"
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        label.pack()
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
         
 class Page4(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="This is page 3")
-        label.pack(side="top", fill="both", expand=True)
+        item_text = "左右测试"
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        label.pack()
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
         
 class Page5(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="This is page 3")
-        label.pack(side="top", fill="both", expand=True)
+        item_text = "遮挡测试"
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        label.pack()
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
         
 class Page6(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="This is page 3")
-        label.pack(side="top", fill="both", expand=True)
+        item_text = "眼镜测试"
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        label.pack()
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
 
 class Page7(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="This is page 3")
-        label.pack(side="top", fill="both", expand=True)
+        item_text = "光照测试"
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        label.pack()
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
 
 class Page8(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="This is page 3")
-        label.pack(side="top", fill="both", expand=True)
+        item_text = "多人测试"
+        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        label.pack()
+        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
+        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
+        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
+        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
