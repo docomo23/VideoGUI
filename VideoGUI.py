@@ -26,7 +26,7 @@ def record(item_text, scenario_texts, IDname):
     for scenario_text in scenario_texts:
         file_name_pre = file_name_pre + scenario_text + "_"
     
-    file_name = path + file_name_pre + ".avi"
+    file_name = path + file_name_pre[:-1] + ".avi"
     print(file_name)
     cap = cv2.VideoCapture(0)
     # Define the codec and create VideoWriter object
