@@ -2,54 +2,85 @@ import time
 import cv2
 import tkinter as tk
 import os
-video_frame_size = (640,480)
+
+video_frame_size = (640, 480)
 video_length = 5
 item_font_size = 25
 description_font_size = 18
-items_list = ["人脸录入", "距离角度测试", "上下侧脸测试", "左右测试", "遮挡测试", "眼镜测试", "光照测试", "多人测试"]
+items_list = ["base", "distance-angle", "up-down-sideface", "left-right-sideface", "blocking", "with-glasses",
+              "lighting", "multi-people"]
+ID = "1"
+max_image_amount = 5
+interval_threshold = 10
 
-def record(item_text, scenario_texts, filename):
-    path = "./" + item_text + "/" 
+
+def record(item_text, scenario_texts, IDname):
+    path = "./data_collection/" + item_text + "/"
     for scenario_text in scenario_texts:
         path = path + scenario_text + "/"
     if not os.path.exists(path):
         os.makedirs(path)
-    path = path + filename
-    print(path)
+    file_path = path + IDname + ".avi"
+    print(file_path)
     cap = cv2.VideoCapture(0)
     # Define the codec and create VideoWriter object
     ################################################
     # might need to change here
     ################################################
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(path, fourcc, 20.0, video_frame_size)
+    out = cv2.VideoWriter(file_path, fourcc, 20.0, video_frame_size)
     start = end = time.time()
-    while(end - start < video_length):
+    while (end - start < video_length):
         # Capture frame-by-frame
         ret, frame = cap.read()
-
         # Save the image
         out.write(frame)
         # Display the resulting frame
         cv2.namedWindow('recording....', cv2.WINDOW_NORMAL)
-        cv2.imshow('recording....',frame)
+        cv2.imshow('recording....', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         end = time.time()
-
     # When everything done, release the capture
     cap.release()
     out.release()
     cv2.destroyAllWindows()
 
+    # video to images
+    video2images(path)
 
-def create_widget(page, item_text, scenario_texts, filename):
-        var = tk.IntVar()
-        tk.Label(page, text=",".join(scenario_texts), font = ("Helvetica", description_font_size)).pack()
-        page.btn = tk.Checkbutton(master=page, variable=var)
-        page.btn["text"] = "".join(scenario_texts)
-        page.btn["command"] = lambda: record(item_text, scenario_texts, filename)
-        page.btn.pack(side="top")
+
+def video2images(video_path, IDname):
+    image_path = video_path + "images/"
+    if not os.path.exists(image_path):
+        os.makedirs(image_path)
+    final_video_path = video_path + IDname + ".avi"
+    print(final_video_path)
+    cap = cv2.VideoCapture(final_video_path)
+    interval = 0
+    counter = 0
+    success, frame = cap.read()
+    print(success)
+    while success:
+        print(interval)
+        if counter > max_image_amount:
+            print("counter exit")
+            break
+        if interval > interval_threshold:
+            cv2.imwrite(image_path + "img%d.jpg" % counter)
+            counter = counter + 1
+        interval = interval + 1
+        success, frame in cap.read()
+
+
+def create_widget(page, item_text, scenario_texts, IDname):
+    var = tk.IntVar()
+    tk.Label(page, text=",".join(scenario_texts), font=("Helvetica", description_font_size)).pack()
+    page.btn = tk.Checkbutton(master=page, variable=var)
+    page.btn["text"] = "start record"
+    page.btn["command"] = lambda: record(item_text, scenario_texts, IDname)
+    page.btn.pack(side="top")
+
 
 def init(toplevel):
     toplevel.title("Image Capture")
@@ -57,141 +88,163 @@ def init(toplevel):
     w = toplevel.winfo_screenwidth()
     h = toplevel.winfo_screenheight()
     size = (1000, 600)
-    x = w/2 - size[0]/2
-    y = h/2 - size[1]/2
+    x = w / 2 - size[0] / 2
+    y = h / 2 - size[1] / 2
     toplevel.geometry("%dx%d+%d+%d" % (size + (x, y)))
     toplevel.attributes('-topmost', 'true')
-    
-    
-def newSubPage(item_text, Page):
-    if item_text == "人脸录入":
-        return Page1(Page)
-    if item_text == "距离角度测试":
-        return Page2(Page)
-    if item_text == "上下侧脸测试":
-        return Page3(Page) 
-    if item_text == "左右测试":
-        return Page4(Page)     
-    if item_text == "遮挡测试":
-        return Page5(Page) 
-    if item_text == "眼镜测试":
-        return Page6(Page)
-    if item_text == "光照测试":
-        return Page7(Page) 
-    if item_text == "多人测试":
-        return Page8(Page)     
 
-    
-    
+
+def newSubPage(item_text, Page):
+    if item_text == "base":
+        return Page1(Page)
+    if item_text == "distance-angle":
+        return Page2(Page)
+    if item_text == "up-down-sideface":
+        return Page3(Page)
+    if item_text == "left-right-sideface":
+        return Page4(Page)
+    if item_text == "blocking":
+        return Page5(Page)
+    if item_text == "with-glasses":
+        return Page6(Page)
+    if item_text == "lighting":
+        return Page7(Page)
+    if item_text == "multi-people":
+        return Page8(Page)
+
+
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
+
     def show(self):
         self.lift()
+
 
 class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "人脸录入"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "base"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
+        label = tk.Label(self, text="人脸录入： 人站在离摄像头0.5米处，分别录入正脸，左侧脸，右侧脸。强光状态下(开灯），弱光状态下（关上窗帘）。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["strong-light", "front-side"], ID)
+        create_widget(self, item_text, ["strong-light", "left-side"], ID)
+        create_widget(self, item_text, ["strong-light", "right-side"], ID)
+        create_widget(self, item_text, ["weak-light", "front-side"], ID)
+        create_widget(self, item_text, ["weak-light", "left-side"], ID)
+        create_widget(self, item_text, ["weak-light", "right-side"], ID)
+
 
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "距离角度测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "distance-angle"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
+        label = tk.Label(self, text="距离角度测试：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（0-10°，10°-20°， 20°-30°）。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["0-0.5", "L", "0-20"], ID)
+        create_widget(self, item_text, ["0-0.5", "L", "20-40"], ID)
+        create_widget(self, item_text, ["0-0.5", "R", "0-20"], ID)
+        create_widget(self, item_text, ["0-0.5", "R", "20-40"], ID)
+        create_widget(self, item_text, ["0.5-1", "L", "0-20"], ID)
+        create_widget(self, item_text, ["0.5-1", "L", "20-40"], ID)
+        create_widget(self, item_text, ["0.5-1", "R", "0-20"], ID)
+        create_widget(self, item_text, ["0.5-1", "R", "20-40"], ID)
+
 
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "上下侧脸测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "up-down-sideface"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
-        
+        label = tk.Label(self, text="上下侧脸测试：测试人在0.5米处，目视前方，在摄像头的上下（0-10度，10-20度，20-30度，30-50度。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["up", "0-20"], ID)
+        create_widget(self, item_text, ["up", "20-40"], ID)
+        create_widget(self, item_text, ["down", "0-20"], ID)
+        create_widget(self, item_text, ["down", "20-40"], ID)
+
+
 class Page4(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "左右测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "left-right-sideface"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
-        
+        label = tk.Label(self, text="左右测试：每人目视前方，站在镜头的0.5米处，向左右0.5米，每人拍十张，检查正确率和误判率。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["L", "0.5"], "3.avi")
+        create_widget(self, item_text, ["R", "0.5"], "4.avi")
+
+
 class Page5(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "遮挡测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "blocking"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
-        
+        label = tk.Label(self, text="遮挡测试：每人站在0.5米用纸片挡住脸的上下左右分别（1/10，1/8，1/4），每人每个方位遮挡拍十张"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["up", "10th"], ID)
+        create_widget(self, item_text, ["up", "8th"], ID)
+        create_widget(self, item_text, ["up", "4th"], ID)
+        create_widget(self, item_text, ["down", "10th"], ID)
+        create_widget(self, item_text, ["down", "8th"], ID)
+        create_widget(self, item_text, ["down", "4th"], ID)
+        create_widget(self, item_text, ["right", "10th"], ID)
+        create_widget(self, item_text, ["right", "8th"], ID)
+        create_widget(self, item_text, ["right", "4th"], ID)
+        create_widget(self, item_text, ["left", "10th"], ID)
+        create_widget(self, item_text, ["left", "8th"], ID)
+        create_widget(self, item_text, ["left", "4th"], ID)
+
+
 class Page6(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "眼镜测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "with-glasses"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
+        label = tk.Label(self, text="眼镜测试： 每人站在0.5米，戴眼镜，托眼镜分别拍五张"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["with"], ID)
+        create_widget(self, item_text, ["without"], ID)
+
 
 class Page7(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "光照测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "lighting"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
+        label = tk.Label(self, text="光照测试：人站在1米处，在强光的状态下（开灯）和弱光状态下（拉上窗帘）。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["strong-light"], ID)
+        create_widget(self, item_text, ["weak-light"], ID)
+
 
 class Page8(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        item_text = "多人测试"
-        label = tk.Label(self, text=item_text, font = ("Helvetica", item_font_size))
+        item_text = "multi-people"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        create_widget(self, item_text, ["强光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "左侧脸"], "3.avi")
-        create_widget(self, item_text, ["强光", "右侧脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "正脸"], "3.avi")
-        create_widget(self, item_text, ["弱光", "左侧脸"], "4.avi")
-        create_widget(self, item_text, ["弱光", "右侧脸"], "4.avi")
+        label = tk.Label(self, text="多人测试：在画面内同时出现多人，无误识别。建议用录像的形式进行测试。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        create_widget(self, item_text, ["multi-people"], ID)
+
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -200,10 +253,10 @@ class MainView(tk.Frame):
         container = tk.Frame(self)
         buttonframe.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
-        
+
         pages = []
         btns = []
-        
+
         for item_text in items_list:
             p = newSubPage(item_text, self)
             p.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
@@ -213,6 +266,7 @@ class MainView(tk.Frame):
             btns.append(b)
 
         pages[0].show()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
