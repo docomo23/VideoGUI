@@ -10,29 +10,31 @@ description_font_size = 18
 items_list = ["base", "distance-angle", "up-down-sideface", "left-right-sideface", "blocking", "with-glasses",
               "lighting", "multi-people"]
 ID = "1"
+root_path = "./data/ID_%d/" % int(ID)
 max_image_amount = 5
 interval_threshold = 20
 path_list = "./path_list%d.txt" % int(ID)
 
 
+
 def record(item_text, scenario_texts, IDname):
-    path = "./data_collection/" + item_text + "/"
-    for scenario_text in scenario_texts:
-        path = path + scenario_text + "/"
+    path = root_path + item_text + "/"
     if not os.path.exists(path):
         os.makedirs(path)
-    with open(path_list, "a") as myfile:
-        myfile.write(path + "\n")
+        
+    file_name_pre = ""
+    for scenario_text in scenario_texts:
+        file_name_pre = file_name_pre + scenario_text + "_"
     
-    file_path = path + IDname + ".avi"
-    print(file_path)
+    file_name = path + file_name_pre + ".avi"
+    print(file_name)
     cap = cv2.VideoCapture(0)
     # Define the codec and create VideoWriter object
     ################################################
     # might need to change here
     ################################################
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(file_path, fourcc, 20.0, video_frame_size)
+    out = cv2.VideoWriter(file_name, fourcc, 20.0, video_frame_size)
     start = end = time.time()
     while (end - start < video_length):
         # Capture frame-by-frame
@@ -51,16 +53,16 @@ def record(item_text, scenario_texts, IDname):
     cv2.destroyAllWindows()
 
     # video to images
-    video2images(path, IDname)
+    video2images(path, file_name_pre, IDname)
 
 
-def video2images(video_path, IDname):
-    image_path = video_path + "images/"
+def video2images(path, video_name_pre, IDname):
+    image_path = path + "imgs/"
     if not os.path.exists(image_path):
         os.makedirs(image_path)
-    final_video_path = video_path + IDname + ".avi"
+    video_name = path + video_name_pre + ".avi"
     #print(final_video_path)
-    cap = cv2.VideoCapture(final_video_path)
+    cap = cv2.VideoCapture(video_name)
     interval = 0
     counter = 0
     success, frame = cap.read()
@@ -70,7 +72,7 @@ def video2images(video_path, IDname):
             #print("counter exit")
             break
         if interval > interval_threshold:
-            cv2.imwrite(image_path + "img%d.jpg" % counter, frame)
+            cv2.imwrite(image_path + video_name_pre + "_img%d.jpg" % counter, frame)
             counter = counter + 1
         interval = interval + 1
         success, frame = cap.read()
@@ -127,6 +129,8 @@ class Page(tk.Frame):
 class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
+        
+        
         item_text = "base"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
@@ -272,9 +276,16 @@ class MainView(tk.Frame):
 
 
 if __name__ == "__main__":
+    from sys import argv, exit
+    if len(argv) != 2:
+        print("please input ID")
+        exit()
+    ID = argv[1]
+    root_path = "./data/ID_%d/" % int(ID)
+    print("ID:%d" % int(ID))
+    print(root_path)
     root = tk.Tk()
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
     init(root)
     root.mainloop()
-
