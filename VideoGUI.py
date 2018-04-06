@@ -11,7 +11,6 @@ items_list = ["base", "distance-angle", "up-down-sideface", "left-right-sideface
 ID = "1"
 root_path = "./data/ID_%d/" % int(ID)
 max_image_amount = 5
-interval_threshold = 20
 path_list = "./path_list%d.txt" % int(ID)
 video_length_short = 2
 video_length_normal = 5
@@ -55,10 +54,10 @@ def record(item_text, scenario_texts, IDname, video_length, mode):
     cv2.destroyAllWindows()
 
     # video to images
-    video2images(path, file_name_pre, IDname)
+    video2images(path, file_name_pre, IDname, video_length)
 
 
-def video2images(path, video_name_pre, IDname):
+def video2images(path, video_name_pre, IDname, video_length):
     image_path = path + "imgs/"
     if not os.path.exists(image_path):
         os.makedirs(image_path)
@@ -68,6 +67,7 @@ def video2images(path, video_name_pre, IDname):
     interval = 0
     counter = 0
     success, frame = cap.read()
+    interval_threshold = video_length / 10
     while success:
         print(interval)
         if counter > max_image_amount:
@@ -76,6 +76,7 @@ def video2images(path, video_name_pre, IDname):
         if interval > interval_threshold:
             cv2.imwrite(image_path + video_name_pre + "_img%d.jpg" % counter, frame)
             counter = counter + 1
+            interval =  0
         interval = interval + 1
         success, frame = cap.read()
 
