@@ -11,7 +11,7 @@ items_list = ["base", "distance-angle", "up-down-sideface", "left-right-sideface
               "lighting", "multi-people"]
 ID = "1"
 max_image_amount = 5
-interval_threshold = 10
+interval_threshold = 20
 
 
 def record(item_text, scenario_texts, IDname):
@@ -47,7 +47,7 @@ def record(item_text, scenario_texts, IDname):
     cv2.destroyAllWindows()
 
     # video to images
-    video2images(path)
+    video2images(path, IDname)
 
 
 def video2images(video_path, IDname):
@@ -55,22 +55,21 @@ def video2images(video_path, IDname):
     if not os.path.exists(image_path):
         os.makedirs(image_path)
     final_video_path = video_path + IDname + ".avi"
-    print(final_video_path)
+    #print(final_video_path)
     cap = cv2.VideoCapture(final_video_path)
     interval = 0
     counter = 0
     success, frame = cap.read()
-    print(success)
     while success:
         print(interval)
         if counter > max_image_amount:
-            print("counter exit")
+            #print("counter exit")
             break
         if interval > interval_threshold:
-            cv2.imwrite(image_path + "img%d.jpg" % counter)
+            cv2.imwrite(image_path + "img%d.jpg" % counter, frame)
             counter = counter + 1
         interval = interval + 1
-        success, frame in cap.read()
+        success, frame = cap.read()
 
 
 def create_widget(page, item_text, scenario_texts, IDname):
