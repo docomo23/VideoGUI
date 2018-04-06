@@ -4,7 +4,6 @@ import tkinter as tk
 import os
 
 video_frame_size = (640, 480)
-video_length = 5
 item_font_size = 25
 description_font_size = 18
 items_list = ["base", "distance-angle", "up-down-sideface", "left-right-sideface", "blocking", "with-glasses",
@@ -14,11 +13,14 @@ root_path = "./data/ID_%d/" % int(ID)
 max_image_amount = 5
 interval_threshold = 20
 path_list = "./path_list%d.txt" % int(ID)
+video_length_short = 2
+video_length_normal = 5
+video_length_long = 12
+video_length_extralong = 20
 
 
-
-def record(item_text, scenario_texts, IDname):
-    path = root_path + item_text + "/"
+def record(item_text, scenario_texts, IDname, video_length, mode):
+    path = root_path + item_text + "/" + mode + "/"
     if not os.path.exists(path):
         os.makedirs(path)
         
@@ -78,12 +80,18 @@ def video2images(path, video_name_pre, IDname):
         success, frame = cap.read()
 
 
-def create_widget(page, item_text, scenario_texts, IDname):
-    var = tk.IntVar()
+def create_widget(page, item_text, scenario_texts, IDname, video_length):
     tk.Label(page, text=",".join(scenario_texts), font=("Helvetica", description_font_size)).pack()
+    var = tk.IntVar()
     page.btn = tk.Checkbutton(master=page, variable=var)
-    page.btn["text"] = "start record"
-    page.btn["command"] = lambda: record(item_text, scenario_texts, IDname)
+    page.btn["text"] = "face record"
+    page.btn["command"] = lambda: record(item_text, scenario_texts, IDname, video_length, "face")
+    page.btn.pack(side="top")
+    
+    var = tk.IntVar()
+    page.btn = tk.Checkbutton(master=page, variable=var)
+    page.btn["text"] = "hand record"
+    page.btn["command"] = lambda: record(item_text, scenario_texts, IDname, video_length * 2 + 1, "hand")
     page.btn.pack(side="top")
 
 
@@ -137,12 +145,13 @@ class Page1(Page):
         label = tk.Label(self, text="人脸录入： 人站在离摄像头0.5米处，分别录入正脸，左侧脸，右侧脸。强光状态下(开灯），弱光状态下（关上窗帘）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["strong-light", "front-side"], ID)
-        create_widget(self, item_text, ["strong-light", "left-side"], ID)
-        create_widget(self, item_text, ["strong-light", "right-side"], ID)
-        create_widget(self, item_text, ["weak-light", "front-side"], ID)
-        create_widget(self, item_text, ["weak-light", "left-side"], ID)
-        create_widget(self, item_text, ["weak-light", "right-side"], ID)
+        video_length = video_length_short
+        create_widget(self, item_text, ["strong-light", "front-side"], ID, video_length)
+        create_widget(self, item_text, ["strong-light", "left-side"], ID, video_length)
+        create_widget(self, item_text, ["strong-light", "right-side"], ID, video_length)
+        create_widget(self, item_text, ["weak-light", "front-side"], ID, video_length)
+        create_widget(self, item_text, ["weak-light", "left-side"], ID, video_length)
+        create_widget(self, item_text, ["weak-light", "right-side"], ID, video_length)
 
 
 class Page2(Page):
@@ -154,14 +163,15 @@ class Page2(Page):
         label = tk.Label(self, text="距离角度测试：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（0-10°，10°-20°， 20°-30°）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["0-0.5", "L", "0-20"], ID)
-        create_widget(self, item_text, ["0-0.5", "L", "20-40"], ID)
-        create_widget(self, item_text, ["0-0.5", "R", "0-20"], ID)
-        create_widget(self, item_text, ["0-0.5", "R", "20-40"], ID)
-        create_widget(self, item_text, ["0.5-1", "L", "0-20"], ID)
-        create_widget(self, item_text, ["0.5-1", "L", "20-40"], ID)
-        create_widget(self, item_text, ["0.5-1", "R", "0-20"], ID)
-        create_widget(self, item_text, ["0.5-1", "R", "20-40"], ID)
+        video_length = video_length_normal
+        create_widget(self, item_text, ["0-0.5", "L", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["0-0.5", "L", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["0-0.5", "R", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["0-0.5", "R", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["0.5-1", "L", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["0.5-1", "L", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["0.5-1", "R", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["0.5-1", "R", "20-40"], ID, video_length)
 
 
 class Page3(Page):
@@ -173,10 +183,11 @@ class Page3(Page):
         label = tk.Label(self, text="上下侧脸测试：测试人在0.5米处，目视前方，在摄像头的上下（0-10度，10-20度，20-30度，30-50度。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["up", "0-20"], ID)
-        create_widget(self, item_text, ["up", "20-40"], ID)
-        create_widget(self, item_text, ["down", "0-20"], ID)
-        create_widget(self, item_text, ["down", "20-40"], ID)
+        video_length = video_length_normal
+        create_widget(self, item_text, ["up", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["up", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["down", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["down", "20-40"], ID, video_length)
 
 
 class Page4(Page):
@@ -188,8 +199,9 @@ class Page4(Page):
         label = tk.Label(self, text="左右测试：每人目视前方，站在镜头的0.5米处，向左右0.5米，每人拍十张，检查正确率和误判率。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["L", "0.5"], "3.avi")
-        create_widget(self, item_text, ["R", "0.5"], "4.avi")
+        video_length = video_length_normal
+        create_widget(self, item_text, ["L", "0.5"], "3.avi", video_length)
+        create_widget(self, item_text, ["R", "0.5"], "4.avi", video_length)
 
 
 class Page5(Page):
@@ -201,18 +213,19 @@ class Page5(Page):
         label = tk.Label(self, text="遮挡测试：每人站在0.5米用纸片挡住脸的上下左右分别（1/10，1/8，1/4），每人每个方位遮挡拍十张"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["up", "10th"], ID)
-        create_widget(self, item_text, ["up", "8th"], ID)
-        create_widget(self, item_text, ["up", "4th"], ID)
-        create_widget(self, item_text, ["down", "10th"], ID)
-        create_widget(self, item_text, ["down", "8th"], ID)
-        create_widget(self, item_text, ["down", "4th"], ID)
-        create_widget(self, item_text, ["right", "10th"], ID)
-        create_widget(self, item_text, ["right", "8th"], ID)
-        create_widget(self, item_text, ["right", "4th"], ID)
-        create_widget(self, item_text, ["left", "10th"], ID)
-        create_widget(self, item_text, ["left", "8th"], ID)
-        create_widget(self, item_text, ["left", "4th"], ID)
+        video_length = video_length_normal
+        create_widget(self, item_text, ["up", "10th"], ID, video_length)
+        create_widget(self, item_text, ["up", "8th"], ID, video_length)
+        create_widget(self, item_text, ["up", "4th"], ID, video_length)
+        create_widget(self, item_text, ["down", "10th"], ID, video_length)
+        create_widget(self, item_text, ["down", "8th"], ID, video_length)
+        create_widget(self, item_text, ["down", "4th"], ID, video_length)
+        create_widget(self, item_text, ["right", "10th"], ID, video_length)
+        create_widget(self, item_text, ["right", "8th"], ID, video_length)
+        create_widget(self, item_text, ["right", "4th"], ID, video_length)
+        create_widget(self, item_text, ["left", "10th"], ID, video_length)
+        create_widget(self, item_text, ["left", "8th"], ID, video_length)
+        create_widget(self, item_text, ["left", "4th"], ID, video_length)
 
 
 class Page6(Page):
@@ -224,8 +237,9 @@ class Page6(Page):
         label = tk.Label(self, text="眼镜测试： 每人站在0.5米，戴眼镜，托眼镜分别拍五张"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["with"], ID)
-        create_widget(self, item_text, ["without"], ID)
+        video_length = video_length_normal
+        create_widget(self, item_text, ["with"], ID, video_length)
+        create_widget(self, item_text, ["without"], ID, video_length)
 
 
 class Page7(Page):
@@ -237,8 +251,9 @@ class Page7(Page):
         label = tk.Label(self, text="光照测试：人站在1米处，在强光的状态下（开灯）和弱光状态下（拉上窗帘）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["strong-light"], ID)
-        create_widget(self, item_text, ["weak-light"], ID)
+        video_length = video_length_normal
+        create_widget(self, item_text, ["strong-light"], ID, video_length)
+        create_widget(self, item_text, ["weak-light"], ID, video_length)
 
 
 class Page8(Page):
@@ -250,7 +265,8 @@ class Page8(Page):
         label = tk.Label(self, text="多人测试：在画面内同时出现多人，无误识别。建议用录像的形式进行测试。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        create_widget(self, item_text, ["multi-people"], ID)
+        video_length = video_length_extralong
+        create_widget(self, item_text, ["multi-people"], ID, video_length)
 
 
 class MainView(tk.Frame):
