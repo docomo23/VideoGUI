@@ -12,6 +12,7 @@ items_list = ["base", "distance-angle", "up-down-sideface", "left-right-sideface
 ID = "1"
 max_image_amount = 5
 interval_threshold = 20
+path_list = "./path_list%d.txt" % int(ID)
 
 
 def record(item_text, scenario_texts, IDname):
@@ -20,6 +21,9 @@ def record(item_text, scenario_texts, IDname):
         path = path + scenario_text + "/"
     if not os.path.exists(path):
         os.makedirs(path)
+    with open(path_list, "a") as myfile:
+        myfile.write(path + "\n")
+    
     file_path = path + IDname + ".avi"
     print(file_path)
     cap = cv2.VideoCapture(0)
@@ -273,3 +277,4 @@ if __name__ == "__main__":
     main.pack(side="top", fill="both", expand=True)
     init(root)
     root.mainloop()
+

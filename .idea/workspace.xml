@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8820903e-15fc-44e2-abe3-b17325eb14b7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoGUI.py" afterPath="$PROJECT_DIR$/VideoGUI.py" />
-    </list>
+    <list default="true" id="8820903e-15fc-44e2-abe3-b17325eb14b7" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,7 +35,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="45" />
     <option name="y" value="23" />
     <option name="width" value="1526" />
@@ -102,7 +100,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="45" y="23" width="1526" height="1004" extended-state="0" />
+    <frame x="45" y="23" width="1526" height="1004" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20969856" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
