@@ -66,14 +66,15 @@ def video2images(path, video_name_pre, IDname, video_length):
     cap = cv2.VideoCapture(video_name)
     interval = 0
     counter = 0
+    frame_num = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     success, frame = cap.read()
-    interval_threshold = video_length / 10
+    interval_threshold = 1. * frame_num / 10
     while success:
         print(interval)
         if counter > max_image_amount:
             #print("counter exit")
             break
-        if interval > interval_threshold:
+        if interval > int(interval_threshold):
             cv2.imwrite(image_path + video_name_pre + "_img%d.jpg" % counter, frame)
             counter = counter + 1
             interval =  0
@@ -146,7 +147,7 @@ class Page1(Page):
         label = tk.Label(self, text="人脸录入： 人站在离摄像头0.5米处，分别录入正脸，左侧脸，右侧脸。强光状态下(开灯），弱光状态下（关上窗帘）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        video_length = video_length_short
+        video_length = video_length_normal
         create_widget(self, item_text, ["strong-light", "front-side"], ID, video_length)
         create_widget(self, item_text, ["strong-light", "left-side"], ID, video_length)
         create_widget(self, item_text, ["strong-light", "right-side"], ID, video_length)
@@ -165,14 +166,14 @@ class Page2(Page):
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
-        create_widget(self, item_text, ["0-0.5", "L", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["0-0.5", "L", "20-40"], ID, video_length)
-        create_widget(self, item_text, ["0-0.5", "R", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["0-0.5", "R", "20-40"], ID, video_length)
-        create_widget(self, item_text, ["0.5-1", "L", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["0.5-1", "L", "20-40"], ID, video_length)
-        create_widget(self, item_text, ["0.5-1", "R", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["0.5-1", "R", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["0.5", "L", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["0.5", "L", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["0.5", "R", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["0.5", "R", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["1", "L", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["1", "L", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["1", "R", "0-20"], ID, video_length)
+        create_widget(self, item_text, ["1", "R", "20-40"], ID, video_length)
 
 
 class Page3(Page):
