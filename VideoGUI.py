@@ -6,11 +6,11 @@ import os
 video_frame_size = (640, 480)
 item_font_size = 25
 description_font_size = 18
-items_list = ["base", "distance-angle", "up-down-sideface", "left-right-sideface", "blocking", "with-glasses",
+items_list = ["base", "distance-angle_a", "distance-angle_b", "distance-angle_c", "up-down-sideface", "left-right-sideface", "blocking", "with-glasses",
               "lighting", "multi-people"]
 ID = "1"
 root_path = "./data/ID_%d/" % int(ID)
-max_image_amount = 5
+max_image_amount = 11
 path_list = "./path_list%d.txt" % int(ID)
 video_length_short = 2
 video_length_normal = 5
@@ -68,14 +68,18 @@ def video2images(path, video_name_pre, IDname, video_length):
     counter = 0
     frame_num = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     success, frame = cap.read()
-    interval_threshold = 1. * frame_num / 10
+    interval_threshold = 1. * frame_num / (max_image_amount + 1)
+    print("shreshold:" + str(int(interval_threshold)) + " total_frame_num:" + str(frame_num))
     while success:
-        print(interval)
+        print(str(success)+" "+str(video_length))
+        print("#"+str(interval))
         if counter > max_image_amount:
-            #print("counter exit")
+            print("counter exit")
             break
         if interval > int(interval_threshold):
-            cv2.imwrite(image_path + video_name_pre + "_img%d.jpg" % counter, frame)
+            if counter > 0:
+                print("write")
+                cv2.imwrite(image_path + video_name_pre + "_img%d.jpg" % counter, frame)
             counter = counter + 1
             interval =  0
         interval = interval + 1
@@ -112,8 +116,12 @@ def init(toplevel):
 def newSubPage(item_text, Page):
     if item_text == "base":
         return Page1(Page)
-    if item_text == "distance-angle":
-        return Page2(Page)
+    if item_text == "distance-angle_a":
+        return Page2_a(Page)
+    if item_text == "distance-angle_b":
+        return Page2_b(Page)
+    if item_text == "distance-angle_c":
+        return Page2_c(Page)
     if item_text == "up-down-sideface":
         return Page3(Page)
     if item_text == "left-right-sideface":
@@ -148,6 +156,9 @@ class Page1(Page):
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
+
+        #create_widget(self, item_text, ["pre-record"], ID, video_length_extralong)
+
         create_widget(self, item_text, ["strong-light", "front-side"], ID, video_length)
         create_widget(self, item_text, ["strong-light", "left-side"], ID, video_length)
         create_widget(self, item_text, ["strong-light", "right-side"], ID, video_length)
@@ -156,24 +167,77 @@ class Page1(Page):
         create_widget(self, item_text, ["weak-light", "right-side"], ID, video_length)
 
 
-class Page2(Page):
+class Page2_a(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         item_text = "distance-angle"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="距离角度测试：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（0-10°，10°-20°， 20°-30°）。"
+        label = tk.Label(self, text="距离角度测试_a：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（15°,30°）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
-        create_widget(self, item_text, ["0.5", "L", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["0.5", "L", "20-40"], ID, video_length)
-        create_widget(self, item_text, ["0.5", "R", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["0.5", "R", "20-40"], ID, video_length)
-        create_widget(self, item_text, ["1", "L", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["1", "L", "20-40"], ID, video_length)
-        create_widget(self, item_text, ["1", "R", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["1", "R", "20-40"], ID, video_length)
+
+        create_widget(self, item_text, ["0.5", "L", "15"], ID, video_length)
+        create_widget(self, item_text, ["0.5", "R", "15"], ID, video_length)
+        create_widget(self, item_text, ["1", "L", "15"], ID, video_length)
+        create_widget(self, item_text, ["1", "R", "15"], ID, video_length)
+        create_widget(self, item_text, ["1.5", "L", "30"], ID, video_length)
+        create_widget(self, item_text, ["1.5", "L", "15"], ID, video_length)
+        create_widget(self, item_text, ["1.5", "R", "15"], ID, video_length)
+        create_widget(self, item_text, ["1.5", "R", "30"], ID, video_length)
+
+
+
+
+
+class Page2_b(Page):
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+        item_text = "distance-angle"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
+        label.pack()
+        label = tk.Label(self, text="距离角度测试_b：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（15°,30°）。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        video_length = video_length_normal
+
+
+        create_widget(self, item_text, ["2", "L", "30"], ID, video_length)
+        create_widget(self, item_text, ["2", "L", "15"], ID, video_length)
+        create_widget(self, item_text, ["2", "R", "15"], ID, video_length)
+        create_widget(self, item_text, ["2", "R", "30"], ID, video_length)
+        create_widget(self, item_text, ["2.5", "L", "50"], ID, video_length)
+        create_widget(self, item_text, ["2.5", "L", "30"], ID, video_length)
+        create_widget(self, item_text, ["2.5", "L", "15"], ID, video_length)
+        create_widget(self, item_text, ["2.5", "R", "15"], ID, video_length)
+        create_widget(self, item_text, ["2.5", "R", "30"], ID, video_length)
+        create_widget(self, item_text, ["2.5", "R", "50"], ID, video_length)
+
+
+
+
+class Page2_c(Page):
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+        item_text = "distance-angle"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
+        label.pack()
+        label = tk.Label(self, text="距离角度测试_c：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（15°,30°）。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        video_length = video_length_normal
+
+
+
+        create_widget(self, item_text, ["3", "L", "50"], ID, video_length)
+        create_widget(self, item_text, ["3", "L", "30"], ID, video_length)
+        create_widget(self, item_text, ["3", "L", "15"], ID, video_length)
+        create_widget(self, item_text, ["3", "R", "15"], ID, video_length)
+        create_widget(self, item_text, ["3", "R", "30"], ID, video_length)
+        create_widget(self, item_text, ["3", "R", "50"], ID, video_length)
+
+
 
 
 class Page3(Page):
@@ -182,14 +246,12 @@ class Page3(Page):
         item_text = "up-down-sideface"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="上下侧脸测试：测试人在0.5米处，目视前方，在摄像头的上下（0-10度，10-20度，20-30度，30-50度。"
+        label = tk.Label(self, text="上下side face：测试人在0.5米处，目视前方，在摄像头的上下（0-10度，10-20度，20-30度，30-50度。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
-        create_widget(self, item_text, ["up", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["up", "20-40"], ID, video_length)
-        create_widget(self, item_text, ["down", "0-20"], ID, video_length)
-        create_widget(self, item_text, ["down", "20-40"], ID, video_length)
+        create_widget(self, item_text, ["up", "0-40"], ID, video_length)
+        create_widget(self, item_text, ["down", "0-40"], ID, video_length)
 
 
 class Page4(Page):
@@ -198,12 +260,14 @@ class Page4(Page):
         item_text = "left-right-sideface"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="左右测试：每人目视前方，站在镜头的0.5米处，向左右0.5米，每人拍十张，检查正确率和误判率。"
+        label = tk.Label(self, text="左右side face：每人目视前方，站在镜头的0.5米处，向左右0.5米，每人拍十张，检查正确率和误判率。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
         create_widget(self, item_text, ["L", "0.5"], "3.avi", video_length)
         create_widget(self, item_text, ["R", "0.5"], "4.avi", video_length)
+
+
 
 
 class Page5(Page):
@@ -253,7 +317,7 @@ class Page7(Page):
         label = tk.Label(self, text="光照测试：人站在1米处，在强光的状态下（开灯）和弱光状态下（拉上窗帘）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
-        video_length = video_length_normal
+        video_length = video_length_long
         create_widget(self, item_text, ["strong-light"], ID, video_length)
         create_widget(self, item_text, ["weak-light"], ID, video_length)
 
