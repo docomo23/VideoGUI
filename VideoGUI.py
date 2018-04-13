@@ -6,7 +6,7 @@ import os
 video_frame_size = (640, 480)
 item_font_size = 25
 description_font_size = 18
-items_list = ["base", "distance-angle_a", "distance-angle_b", "distance-angle_c", "up-down-sideface", "left-right-sideface", "blocking", "with-glasses",
+items_list = ["base", "distance-angle_a", "distance-angle_b", "distance-angle_c", "up-down-sideface", "left-right-sideface", "rotate-side-to-side", "blocking", "with-glasses",
               "lighting", "multi-people"]
 ID = "1"
 root_path = "./data/ID_%d/" % int(ID)
@@ -125,7 +125,9 @@ def newSubPage(item_text, Page):
     if item_text == "up-down-sideface":
         return Page3(Page)
     if item_text == "left-right-sideface":
-        return Page4(Page)
+        return Page4_a(Page)
+    if item_text == "rotate-side-to-side":
+        return Page4_b(Page)    
     if item_text == "blocking":
         return Page5(Page)
     if item_text == "with-glasses":
@@ -254,20 +256,34 @@ class Page3(Page):
         create_widget(self, item_text, ["down", "0-40"], ID, video_length)
 
 
-class Page4(Page):
+class Page4_a(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         item_text = "left-right-sideface"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="左右side face：每人目视前方，站在镜头的0.5米处，向左右0.5米，每人拍十张，检查正确率和误判率。"
+        label = tk.Label(self, text="左右side face：分别从左到右，从右到左转头，每人拍十张，检查正确率和误判率。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
-        create_widget(self, item_text, ["L", "0.5"], "3.avi", video_length)
-        create_widget(self, item_text, ["R", "0.5"], "4.avi", video_length)
+        create_widget(self, item_text, ["L"], "3.avi", video_length)
+        create_widget(self, item_text, ["R"], "4.avi", video_length)
 
 
+        
+class Page4_b(Page):
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+        item_text = "left-right-sideface"
+        label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
+        label.pack()
+        label = tk.Label(self, text="左右摆头：分别从左肩到右肩摆头，再从右肩到左肩摆头，每人拍十张，检查正确率和误判率。"
+                         , font=("Helvetica", description_font_size))
+        label.pack()
+        video_length = video_length_normal
+        create_widget(self, item_text, ["L"], "3.avi", video_length)
+        create_widget(self, item_text, ["R"], "4.avi", video_length)
+        
 
 
 class Page5(Page):
