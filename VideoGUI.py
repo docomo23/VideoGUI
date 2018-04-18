@@ -30,10 +30,9 @@ def record(item_text, scenario_texts, IDname, video_length, mode):
     file_name = path + file_name_pre + ".avi"
     print(file_name)
     cap = cv2.VideoCapture(0)
-    # Define the codec and create VideoWriter object
-    ################################################
-    # might need to change here
-    ################################################
+    ###########################################################
+    # might need to change here for the format of the video
+    ###########################################################
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(file_name, fourcc, 20.0, video_frame_size)
     start = end = time.time()
@@ -87,6 +86,7 @@ def video2images(path, video_name_pre, IDname, video_length):
 
 
 def create_widget(page, item_text, scenario_texts, IDname, video_length):
+
     tk.Label(page, text=",".join(scenario_texts), font=("Helvetica", description_font_size)).pack()
     var = tk.IntVar()
     page.btn = tk.Checkbutton(master=page, variable=var)
@@ -266,8 +266,8 @@ class Page4_a(Page):
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
-        create_widget(self, item_text, ["L"], "3.avi", video_length)
-        create_widget(self, item_text, ["R"], "4.avi", video_length)
+        create_widget(self, item_text, ["L"], ID, video_length)
+        create_widget(self, item_text, ["R"], ID, video_length)
 
 
         
@@ -281,8 +281,8 @@ class Page4_b(Page):
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
-        create_widget(self, item_text, ["L"], "3.avi", video_length)
-        create_widget(self, item_text, ["R"], "4.avi", video_length)
+        create_widget(self, item_text, ["L"], ID, video_length)
+        create_widget(self, item_text, ["R"], ID, video_length)
         
 
 
@@ -366,6 +366,7 @@ class MainView(tk.Frame):
             p = newSubPage(item_text, self)
             p.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
             pages.append(p)
+
             b = tk.Button(buttonframe, text=item_text, command=p.lift)
             b.pack(side="left")
             btns.append(b)
@@ -384,6 +385,9 @@ if __name__ == "__main__":
     print(root_path)
     root = tk.Tk()
     main = MainView(root)
+    label = tk.Label(main, text="ID:"+ID, font=("Helvetica", item_font_size))
+    label.pack()
     main.pack(side="top", fill="both", expand=True)
+
     init(root)
     root.mainloop()
