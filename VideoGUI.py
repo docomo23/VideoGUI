@@ -175,7 +175,7 @@ class Page2_a(Page):
         item_text = "distance-angle"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="距离角度测试_a：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（15°,30°）。"
+        label = tk.Label(self, text="距离角度测试_a：在地上画一个扇形，分别标记在0.5米, 1米, 1.5米, 左右角度（15°,30°）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
@@ -199,7 +199,7 @@ class Page2_b(Page):
         item_text = "distance-angle"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="距离角度测试_b：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（15°,30°）。"
+        label = tk.Label(self, text="距离角度测试_a：在地上画一个扇形，分别标记在2米, 2.5米, 左右角度（15°,30°,50°）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
@@ -225,7 +225,7 @@ class Page2_c(Page):
         item_text = "distance-angle"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="距离角度测试_c：在地上画一个扇形，分别标记在0-0.5米， 0.5米-1米，1米-2米， 左右角度（15°,30°）。"
+        label = tk.Label(self, text="距离角度测试_c：在地上画一个扇形，分别标记在3米, 左右角度（15°,30°,50°）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
@@ -248,12 +248,12 @@ class Page3(Page):
         item_text = "up-down-sideface"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="上下side face：测试人在0.5米处，目视前方，在摄像头的上下（0-10度，10-20度，20-30度，30-50度。"
+        label = tk.Label(self, text="上下side face：测试人在0.5米处，头分别从上45°和下45°缓慢摆动到水平位置。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
-        create_widget(self, item_text, ["up", "0-40"], ID, video_length)
-        create_widget(self, item_text, ["down", "0-40"], ID, video_length)
+        create_widget(self, item_text, ["up"], ID, video_length)
+        create_widget(self, item_text, ["down"], ID, video_length)
 
 
 class Page4_a(Page):
@@ -262,7 +262,7 @@ class Page4_a(Page):
         item_text = "left-right-sideface"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="左右side face：分别从左到右，从右到左转头，每人拍十张，检查正确率和误判率。"
+        label = tk.Label(self, text="左右side face：测试人在0.5米处，头分别从左45°和右45°缓慢摆动到水平位置。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
@@ -277,7 +277,7 @@ class Page4_b(Page):
         item_text = "left-right-sideface"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="左右摆头：分别从左肩到右肩摆头，再从右肩到左肩摆头，每人拍十张，检查正确率和误判率。"
+        label = tk.Label(self, text="左右摆头：测试人在0.5米处，分别从左肩到右肩摆头，再从右肩到左肩摆头。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
@@ -292,7 +292,7 @@ class Page5(Page):
         item_text = "blocking"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="遮挡测试：每人站在0.5米用纸片挡住脸的上下左右分别（1/10，1/8，1/4），每人每个方位遮挡拍十张"
+        label = tk.Label(self, text="遮挡测试：测试人在0.5米处，用纸片挡住脸的上下左右分别（1/10，1/8，1/4）"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
@@ -316,7 +316,7 @@ class Page6(Page):
         item_text = "with-glasses"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="眼镜测试： 每人站在0.5米，戴眼镜，托眼镜分别拍五张"
+        label = tk.Label(self, text="眼镜测试： 测试人在0.5米处，戴眼镜，托眼镜"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_normal
@@ -330,7 +330,7 @@ class Page7(Page):
         item_text = "lighting"
         label = tk.Label(self, text=item_text, font=("Helvetica", item_font_size))
         label.pack()
-        label = tk.Label(self, text="光照测试：人站在1米处，在强光的状态下（开灯）和弱光状态下（拉上窗帘）。"
+        label = tk.Label(self, text="光照测试：测试人在0.5米处，在强光的状态下（开灯，并移动光源）和弱光状态下（拉上窗帘）。"
                          , font=("Helvetica", description_font_size))
         label.pack()
         video_length = video_length_long
